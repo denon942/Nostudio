@@ -1,0 +1,208 @@
+<template>
+<v-list three-line>
+    <section class="container">
+        <div>
+            <logo />
+            <video id="their-video" width="200" autoplay playsinline></video>
+            <video id="my-video" muted="true" width="200" autoplay playsinline></video>
+
+            <div class="main">
+                <h2>Nuxt.js + SkyWayのビデオチャット</h2>
+                マイク:
+                <select v-model="selectedAudio" @change="onChange">
+                    <option disabled value="">Please select one</option>
+                    <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
+                        {{ audio.text }}
+                    </option>
+                </select>
+
+                <div>
+                    <p>Your id: <span id="my-id">{{peerId}}</span></p>
+                    <p>他のブラウザでこのIDをコールしましょう。</p>
+                    <h3>コールする</h3>
+                    <input v-model="calltoid" placeholder="call id">
+                    <button @click="makeCall" class="button--green">Call</button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <template v-for="(comment, index) in comments">
+        <v-list-item :key="index" :index="index" avatar>
+            <v-list-item-avatar>
+                <!-- <img :src="comment.avatar"> -->
+            </v-list-item-avatar>
+
+            <v-list-item-content>
+                <v-list-item-subtitle class="text--primary">{{comment.content}}</v-list-item-subtitle>
+                <v-list-item-subtitle>
+                    <!-- {{comment.createdAt.toDate().toLocaleString()}} -->
+                </v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-list-item-action>
+            </v-list-item-action>
+        </v-list-item>
+        <!-- <v-divider :key="comment.id"></v-divider> -->
+    </template>
+    <v-card class="grey display-1  pa-0 ma-0" height="50" elevation="0" tile>
+        <v-row class="ma-0 pa-0" justify="end">
+            <v-col cols="6" class="ma-0 pa-0 py-4">
+                <v-text-field dense label="Message" class="ma-0" color="black" v-model="coment"></v-text-field>
+            </v-col>
+            <v-col cols="2" class="ma-0 pa-0 py-1">
+                <v-btn class="pa-0 ma-0 ml-1" tile large color="teal" icon @click="send">
+                    <v-icon class="pa-0 ma-0" color="white">mdi-send</v-icon>
+                </v-btn>
+            </v-col>
+        </v-row>
+    </v-card>
+</v-list>
+</template>
+
+<script>
+import firebase from '../plugins/firebase';
+import Peer from 'skyway-js';
+export default {
+    name: "ChatBoard",
+    data: () => ({
+        comments: [],
+        coment: '',
+        APIKey: '79dca892-7921-4630-b281-eee96ef188e9',
+        selectedAudio: '',
+        audios: [],
+        videos: [],
+        localStream: null,
+        peerId: '',
+        calltoid: ''
+    }),
+    methods: {
+        send: function () {
+            // this.chat = []
+            firebase.firestore().collection('room').doc('001').collection('comments').add({
+                    content: this.coment,
+                    createdAt: new Date(),
+                    userid: '001'
+                })
+                .then(
+                    // firebase.firestore().collection('comments').get().then(async snapshot => {
+                    //     await snapshot.forEach(doc => {
+                    //         //contentは要素
+                    //         //pushは配列データそのもの
+                    //         // this.allData.push(doc.data().content)
+                    //         console.log(doc.data().content)
+                    //         this.chat.push({
+                    //             content:doc.data().content
+                    //             })
+                    //     })
+                    // })
+                    this.comments.push({
+                        content: this.coment
+                    }),
+                    this.coment = ""
+                )
+
+        },
+        onChange: function () {
+            if (this.selectedAudio != '') {
+                this.connectLocalCamera();
+            }
+        },
+
+        connectLocalCamera: async function () {
+            const constraints = {
+                audio: this.selectedAudio ? {
+                    deviceId: {
+                        exact: this.selectedAudio
+                    }
+                } : false
+            }
+
+            const stream = await navigator.mediaDevices.getUserMedia(constraints);
+            document.getElementById('my-video').srcObject = stream;
+            this.localStream = stream;
+        },
+
+        makeCall: function () {
+            console.log('makeCall');
+            const call = this.peer.call(this.calltoid, this.localStream);
+            this.connect(call);
+        },
+
+        connect: function (call) {
+            call.on('stream', stream => {
+                const el = document.getElementById('their-video');
+                el.srcObject = stream;
+                el.play();
+            });
+        }
+    },
+    watch: {
+        // ログインアニメーションなど試作段階でできてないボタンなど変化させたい
+        // 3秒間ローディング
+        // loading (val) {
+        //     val && setTimeout(async() => {
+        //         // async await 遅らせる
+        //         await this.close()
+        //         if(this.authenticatedUser == true)
+        //         {
+        //             alert('ログイン成功')
+        //         }
+        //         else{
+        //             alert('ログイン失敗');
+        //         }
+        //     }, 3000)
+        // },
+        //   モーダル初期化
+        dialog: function () {
+            if (this.authenticatedUser == false) {
+                if (this.dialog === true) return
+                this.$refs.form.reset()
+            }
+        },
+    },
+    mounted: function () {
+        this.peer = new Peer({
+            key: this.APIKey,
+            debug: 3,
+        });
+
+        this.peer.on('open', () => {
+            this.peerId = this.peer.id
+        });
+
+        this.peer.on('call', call => {
+            call.answer(this.localStream);
+            this.connect(call);
+        });
+
+        //デバイスへのアクセス
+        navigator.mediaDevices.enumerateDevices()
+            .then((deviceInfos) => {
+                for (let i = 0; i !== deviceInfos.length; ++i) {
+                    const deviceInfo = deviceInfos[i]
+                    if (deviceInfo.kind === 'audioinput') {
+                        this.audios.push({
+                            text: deviceInfo.label ||
+                                `Microphone ${this.audios.length + 1}`,
+                            value: deviceInfo.deviceId
+                        })
+                    }
+                }
+            })
+    },
+    created: function () {
+        firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').get().then(async snapshot => {
+            await snapshot.forEach(doc => {
+                //contentは要素
+                //pushは配列データそのもの
+                // this.allData.push(doc.data().content)
+                console.log(doc.data().content)
+                this.comments.push({
+                    content: doc.data().content
+                })
+            })
+        })
+    }
+}
+</script>

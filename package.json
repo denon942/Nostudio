@@ -1,0 +1,22 @@
+{
+  "name": "nostudio",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "firebase": "^8.0.2",
+    "firebase-tools": "^8.16.1",
+    "nuxt": "^2.14.6",
+    "save": "^2.4.0",
+    "skyway-js": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxtjs/vuetify": "^1.11.2"
+  }
+}
