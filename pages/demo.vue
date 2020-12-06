@@ -22,6 +22,8 @@
                     <h3>コールする</h3>
                     <input v-model="calltoid" placeholder="call id">
                     <button @click="makeCall" class="button--green">Call</button>
+                    <button @click="callOn" class="button--green">On</button>
+                    <button @click="callOff" class="button--green">Off</button>
                 </div>
             </div>
 
@@ -135,6 +137,14 @@ export default {
                 el.srcObject = stream;
                 el.play();
             });
+        },
+        callOn:function(){
+          //ミュート解除
+          this.localStream.getAudioTracks()[0].enabled = true
+        },
+        callOff:function(){
+          //ミュート
+          this.localStream.getAudioTracks()[0].enabled = false
         }
     },
     watch: {

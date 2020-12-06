@@ -108,7 +108,7 @@ export default {
             this.loading = true
             this.array['email'] = this.mailaddress
             this.array['password'] = this.password
-            this.$store.commit('user_login', this.array)
+            $store.commit('user_login', this.array)
         },
         close(){
             this.dialog = false
