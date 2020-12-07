@@ -213,7 +213,6 @@ export default {
                 })
             })
         })
-        console.log(process.env.VUE_APP_API_FIREBASE)
     }
 }
 </script>
