@@ -1,5 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
 
+require('dotenv').config();
+const {VUE_APP_API_FIREBASE,VUE_APP_API_SKYWAY} = process.env;
+
 export default {
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
@@ -34,6 +37,7 @@ export default {
 
   // Modules (https://go.nuxtjs.dev/config-modules)
   modules: [
+    '@nuxtjs/dotenv'
   ],
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)
@@ -57,5 +61,12 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
+  },
+  generate: {
+    dir: 'public'
+  },
+  env:{
+    VUE_APP_API_FIREBASE,
+    VUE_APP_API_SKYWAY
   }
 }

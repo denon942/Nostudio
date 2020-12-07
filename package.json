@@ -6,18 +6,26 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "publish-please": "publish-please",
+    "prepublishOnly": "publish-please guard"
   },
   "dependencies": {
+    "@nuxtjs/dotenv": "^1.4.1",
     "core-js": "^3.6.5",
     "firebase": "^8.0.2",
     "firebase-tools": "^8.16.1",
     "nuxt": "^2.14.6",
     "save": "^2.4.0",
     "skyway-js": "^4.0.0",
+    "vuetify": "^2.3.19",
     "vuex": "^3.6.0"
   },
   "devDependencies": {
     "@nuxtjs/vuetify": "^1.11.2"
-  }
+  },
+  "main": "index.js",
+  "repository": "https://github.com/denon942/Nostudio.git",
+  "author": "<denon38msn@gmail.com>",
+  "license": "MIT"
 }

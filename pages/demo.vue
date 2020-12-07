@@ -70,7 +70,7 @@ export default {
     data: () => ({
         comments: [],
         coment: '',
-        APIKey: '79dca892-7921-4630-b281-eee96ef188e9',
+        APIKey: process.env.VUE_APP_API_SKYWAY,
         selectedAudio: '',
         audios: [],
         videos: [],
@@ -213,6 +213,7 @@ export default {
                 })
             })
         })
+        console.log(process.env.VUE_APP_API_FIREBASE)
     }
 }
 </script>
