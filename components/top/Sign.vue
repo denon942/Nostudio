@@ -97,11 +97,6 @@ export default {
         }
     },
     methods: {
-        signUp:async function(){
-            this.array['email'] = this.mailaddress
-            this.array['password'] = this.password
-            await this.$store.commit('registUser',this.array)
-        },
         // ログイン
         login(){
             if (this.mailaddress === '' || this.password === '') return
