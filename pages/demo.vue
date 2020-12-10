@@ -26,19 +26,18 @@
                     <button @click="callOff" class="button--green">Off</button>
                 </div>
             </div>
-
         </div>
     </section>
     <template v-for="(comment, index) in comments">
-        <v-list-item :key="index" :index="index" avatar>
-            <v-list-item-avatar>
-                <!-- <img :src="comment.avatar"> -->
-            </v-list-item-avatar>
+        <v-list-item :key="index" :index="index">
+            <!-- <v-list-item-avatar>
+                <img :src="comment.avatar">
+            </v-list-item-avatar> -->
 
             <v-list-item-content>
                 <v-list-item-subtitle class="text--primary">{{comment.content}}</v-list-item-subtitle>
                 <v-list-item-subtitle>
-                    <!-- {{comment.createdAt.toDate().toLocaleString()}} -->
+                    {{comment.createdAt.toDate().toLocaleTimeString().toLocaleString()}}
                 </v-list-item-subtitle>
             </v-list-item-content>
 
@@ -63,7 +62,7 @@
 </template>
 
 <script>
-import firebase from '../plugins/firebase';
+import firebase from '@/plugins/firebase';
 import Peer from 'skyway-js';
 export default {
     name: "ChatBoard",
@@ -80,38 +79,26 @@ export default {
     }),
     methods: {
         send: function () {
-            // this.chat = []
+            //チャート送信
             firebase.firestore().collection('room').doc('001').collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
                     userid: '001'
                 })
                 .then(
-                    // firebase.firestore().collection('comments').get().then(async snapshot => {
-                    //     await snapshot.forEach(doc => {
-                    //         //contentは要素
-                    //         //pushは配列データそのもの
-                    //         // this.allData.push(doc.data().content)
-                    //         console.log(doc.data().content)
-                    //         this.chat.push({
-                    //             content:doc.data().content
-                    //             })
-                    //     })
-                    // })
                     this.comments.push({
                         content: this.coment
                     }),
                     this.coment = ""
                 )
-
         },
         onChange: function () {
             if (this.selectedAudio != '') {
-                this.connectLocalCamera();
+                this.connectLocalAudio();
             }
         },
 
-        connectLocalCamera: async function () {
+        connectLocalAudio: async function () {
             const constraints = {
                 audio: this.selectedAudio ? {
                     deviceId: {
@@ -126,7 +113,6 @@ export default {
         },
 
         makeCall: function () {
-            console.log('makeCall');
             const call = this.peer.call(this.calltoid, this.localStream);
             this.connect(call);
         },
@@ -138,39 +124,20 @@ export default {
                 el.play();
             });
         },
-        callOn:function(){
-          //ミュート解除
-          this.localStream.getAudioTracks()[0].enabled = true
-        },
-        callOff:function(){
-          //ミュート
-          this.localStream.getAudioTracks()[0].enabled = false
-        }
-    },
-    watch: {
-        // ログインアニメーションなど試作段階でできてないボタンなど変化させたい
-        // 3秒間ローディング
-        // loading (val) {
-        //     val && setTimeout(async() => {
-        //         // async await 遅らせる
-        //         await this.close()
-        //         if(this.authenticatedUser == true)
-        //         {
-        //             alert('ログイン成功')
-        //         }
-        //         else{
-        //             alert('ログイン失敗');
-        //         }
-        //     }, 3000)
-        // },
-        //   モーダル初期化
-        dialog: function () {
-            if (this.authenticatedUser == false) {
-                if (this.dialog === true) return
-                this.$refs.form.reset()
+        callOn: function () {
+            if (this.peerId == '') {
+                //ミュート解除
+                this.localStream.getAudioTracks()[0].enabled = true
             }
         },
+        callOff: function () {
+            if (this.peerId == '') {
+                //ミュート
+                this.localStream.getAudioTracks()[0].enabled = false
+            }
+        }
     },
+    watch: {},
     mounted: function () {
         this.peer = new Peer({
             key: this.APIKey,
@@ -207,9 +174,9 @@ export default {
                 //contentは要素
                 //pushは配列データそのもの
                 // this.allData.push(doc.data().content)
-                console.log(doc.data().content)
                 this.comments.push({
-                    content: doc.data().content
+                    content: doc.data().content,
+                    createdAt: doc.data().createdAt
                 })
             })
         })

@@ -1,10 +1,9 @@
 import firebase from 'firebase'
 export default ({
     state: {
-      // ユーザデータ
+        // ユーザデータ
         array: {},
-        user: {},
-        user_id:'',
+        user_id:"",
         // ログイン情報のフラグ
         status: false,
         // メールアドレス・パスワード
@@ -27,10 +26,10 @@ export default ({
         user_month:0,
         user_day:0,
         // クレジットカードナンバー
-        user_credit_number: ''
+        user_credit_number: ""
     },
     mutations:{
-      registUser(state,array){
+      user_regist(state,array){
         firebase.auth().createUserWithEmailAndPassword(
           array['email'],
           array['password']
@@ -41,21 +40,12 @@ export default ({
               if (user) {
                   // User logged in already or has just logged in.
                   // ユーザーIDの取得
-                  console.log(user.uid);
+                  //console.log(user.uid);
                   // ユーザIDをドキュメントIDとしてコレクションにarrayの中身をフィールドとして追加
-                  state.user_id = user.uid
-                  firebase.firestore().collection("users").doc(state.user_id)
+                  firebase.firestore().collection("users").doc(user.uid)
                   .set(array)
                   .then(function () {
-                      // 正常にデータ保存できた時の処理
-                      console.log('success')
-                      firebase.firestore().collection("judge").doc(state.user_id)
-                      .set({judge:0})
-                      .then(function () {
-                          // 正常にデータ保存できた時の処理
-                          console.log('success')
-                          router.push('/user_mypage')
-                      })
+                      $nuxt.$router.push('/demo')
                   })
 
               } else {
@@ -63,6 +53,21 @@ export default ({
               }
           })
         })
+      },
+      //ログイン
+      user_login(state,array)
+      {
+        firebase.auth().signInWithEmailAndPassword(
+            array['email'],
+            array['password'])
+        .then(()=>{
+            $nuxt.$router.push('/demo')
+        })
+      },
+      //ログアウト
+      user_logout(){
+        firebase.auth().signOut()
+        $nuxt.$router.push('/')
       }
     },
     actions:{},

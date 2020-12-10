@@ -85,7 +85,7 @@ export default {
         signUp:function(){
             this.array['email'] = this.mailaddress
             this.array['password'] = this.password
-            this.$store.commit('registUser',this.array)
+            this.$store.commit('user_regist',this.array)
         },
         signOut:function(){
             this.$store.commit('logout')
