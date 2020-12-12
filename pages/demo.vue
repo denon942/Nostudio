@@ -28,24 +28,14 @@
             </div>
         </div>
     </section>
-    <template v-for="(comment, index) in comments">
-        <v-list-item :key="index" :index="index">
-            <!-- <v-list-item-avatar>
-                <img :src="comment.avatar">
-            </v-list-item-avatar> -->
-
-            <v-list-item-content>
-                <v-list-item-subtitle class="text--primary">{{comment.content}}</v-list-item-subtitle>
-                <v-list-item-subtitle>
-                    {{comment.createdAt.toDate().toLocaleTimeString().toLocaleString()}}
-                </v-list-item-subtitle>
-            </v-list-item-content>
-
-            <v-list-item-action>
-            </v-list-item-action>
+    <v-list class="overflow-y-auto" max-height="470" height="470" elevation="0" tile>
+        <v-list-item v-for="(comment,index) in comments" :key="index" :index="index" class="black--text">
+            <v-list-item-subtitle class="text--primary">{{comment.content}}</v-list-item-subtitle>
+            <v-list-item-subtitle>
+                {{comment.createdAt}}
+            </v-list-item-subtitle>
         </v-list-item>
-        <!-- <v-divider :key="comment.id"></v-divider> -->
-    </template>
+    </v-list>
     <v-card class="grey display-1  pa-0 ma-0" height="50" elevation="0" tile>
         <v-row class="ma-0 pa-0" justify="end">
             <v-col cols="6" class="ma-0 pa-0 py-4">
@@ -68,6 +58,7 @@ export default {
     name: "ChatBoard",
     data: () => ({
         comments: [],
+        comments_box: [],
         coment: '',
         APIKey: process.env.VUE_APP_API_SKYWAY,
         selectedAudio: '',
@@ -86,9 +77,7 @@ export default {
                     userid: '001'
                 })
                 .then(
-                    this.comments.push({
-                        content: this.coment
-                    }),
+                    this.getCaht(),
                     this.coment = ""
                 )
         },
@@ -135,7 +124,23 @@ export default {
                 //ミュート
                 this.localStream.getAudioTracks()[0].enabled = false
             }
-        }
+        },
+        getCaht: async function () {
+            await firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').get().then(snapshot => {
+                snapshot.forEach(doc => {
+                    //contentは要素
+                    //pushは配列データそのもの
+                    // this.allData.push(doc.data().content)
+                    this.comments_box.push({
+                        content: doc.data().content,
+                        createdAt: doc.data().createdAt.toDate().toLocaleTimeString().toLocaleString()
+                    })
+                })
+            })
+            this.comments = this.comments_box
+            console.log(this.comments_box)
+            this.comments_box = []
+        },
     },
     watch: {},
     mounted: function () {
@@ -167,19 +172,10 @@ export default {
                     }
                 }
             })
+        this.getCaht()
     },
     created: function () {
-        firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').get().then(async snapshot => {
-            await snapshot.forEach(doc => {
-                //contentは要素
-                //pushは配列データそのもの
-                // this.allData.push(doc.data().content)
-                this.comments.push({
-                    content: doc.data().content,
-                    createdAt: doc.data().createdAt
-                })
-            })
-        })
+
     }
 }
 </script>
