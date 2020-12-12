@@ -1,34 +1,38 @@
-import firebase from 'firebase'
+import firebase from "firebase/app"
+import "firebase/auth"
+import "firebase/firestore"
 export default ({
-    state: {
-        // ユーザデータ
-        array: {},
-        user_id:"",
-        // ログイン情報のフラグ
-        status: false,
-        // メールアドレス・パスワード
-        user_email: "",
-        user_pass: "",
-        // 氏名・かな
-        user_fname: "",
-        user_fname_kana: "",
-        user_name: "",
-        user_name_kana: "",
-        // 住所
-        user_post:"",
-        user_address: "",
-        // 電話番号
-        user_tel:"",
-        // 性別
-        user_gender:0,
-        // 誕生日
-        user_year:0,
-        user_month:0,
-        user_day:0,
-        // クレジットカードナンバー
-        user_credit_number: "",
-        //チャット
-        comments:[]
+    state() {
+        return{
+          // ユーザデータ
+          array: {},
+          user_id:"",
+          // ログイン情報のフラグ
+          status: false,
+          // メールアドレス・パスワード
+          user_email: "",
+          user_pass: "",
+          // 氏名・かな
+          user_fname: "",
+          user_fname_kana: "",
+          user_name: "",
+          user_name_kana: "",
+          // 住所
+          user_post:"",
+          user_address: "",
+          // 電話番号
+          user_tel:"",
+          // 性別
+          user_gender:0,
+          // 誕生日
+          user_year:0,
+          user_month:0,
+          user_day:0,
+          // クレジットカードナンバー
+          user_credit_number: "",
+          //チャット
+          comments:[]
+        }
     },
     mutations:{
       user_regist(state,array){
@@ -56,7 +60,7 @@ export default ({
         })
       },
       //ログイン
-      user_login(array)
+      user_login(state,array)
       {
         firebase.auth().signInWithEmailAndPassword(
             array['email'],
@@ -72,5 +76,5 @@ export default ({
       },
     },
     actions:{},
-    getters:{}
+    getters:{},
   })
