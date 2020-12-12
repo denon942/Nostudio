@@ -26,7 +26,9 @@ export default ({
         user_month:0,
         user_day:0,
         // クレジットカードナンバー
-        user_credit_number: ""
+        user_credit_number: "",
+        //チャット
+        comments:[]
     },
     mutations:{
       user_regist(state,array){
@@ -36,7 +38,7 @@ export default ({
         )
         .then(function() {
           // ユーザ情報の変更などに検知
-          firebase.auth().onAuthStateChanged((user) => {
+            firebase.auth().onAuthStateChanged((user) => {
               if (user) {
                   // User logged in already or has just logged in.
                   // ユーザーIDの取得
@@ -47,7 +49,6 @@ export default ({
                   .then(function () {
                       $nuxt.$router.push('/demo')
                   })
-
               } else {
                   // User not logged in or has just logged out.
               }
@@ -55,7 +56,7 @@ export default ({
         })
       },
       //ログイン
-      user_login(state,array)
+      user_login(array)
       {
         firebase.auth().signInWithEmailAndPassword(
             array['email'],
@@ -68,7 +69,7 @@ export default ({
       user_logout(){
         firebase.auth().signOut()
         $nuxt.$router.push('/')
-      }
+      },
     },
     actions:{},
     getters:{}
