@@ -28,7 +28,7 @@
             </div>
         </div>
     </section>
-    <v-list class="overflow-y-auto" max-height="470" height="470" elevation="0" tile>
+    <v-list class="overflow-y-auto" max-height="470" height="470" elevation="0" tile v-chat-scroll="{always: false, smooth: true, scrollonremoved:true}">
         <v-list-item v-for="(comment,index) in comments" :key="index" :index="index" class="black--text">
             <v-list-item-subtitle class="text--primary">{{comment.content}}</v-list-item-subtitle>
             <v-list-item-subtitle>
@@ -126,7 +126,7 @@ export default {
             }
         },
         getCaht: async function () {
-            await firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').get().then(snapshot => {
+            await firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').limit(50).get().then(snapshot => {
                 snapshot.forEach(doc => {
                     //contentは要素
                     //pushは配列データそのもの
