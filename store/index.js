@@ -88,7 +88,7 @@ export const mutations = {
         array['email'],
         array['password'])
     .then(()=>{
-        $nuxt.$router.push('/demo')
+        $nuxt.$router.push('/User/mypage')
     })
   },
   onAuthStateChanged(state) {
