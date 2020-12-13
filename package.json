@@ -14,7 +14,7 @@
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/font-awesome": "^1.0.4",
     "@vue/cli-init": "^4.5.9",
-    "core-js": "^3.6.5",
+    "core-js": "2.6.11",
     "firebase": "^8.0.2",
     "firebase-tools": "^8.16.1",
     "nuxt": "^2.14.6",
@@ -23,7 +23,7 @@
     "save": "^2.4.0",
     "skyway-js": "^4.0.0",
     "vue-chat-scroll": "^1.4.0",
-    "vuetify": "^2.3.19",
+    "vuetify": "^2.3.21",
     "vuex": "^3.6.0"
   },
   "devDependencies": {

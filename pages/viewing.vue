@@ -7,17 +7,7 @@
             <video id="my-video" muted="true" width="200" autoplay playsinline></video>
 
             <div class="main">
-                {{items.user_id}}:
-                {{deliveryId}}
-                {{flg}}
-                <h2>Nuxt.js + SkyWayのビデオチャット</h2>
-                <div>
-                    <p>Your id: <span id="my-id">{{peerId}}</span></p>
-                    <p>他のブラウザでこのIDをコールしましょう。</p>
-                    <h3>コールする</h3>
-                    <input v-model="calltoid" placeholder="call id">
-                    <button @click="makeCall" class="button--green">Call</button>
-                </div>
+                <h2>Nuxt.js + SkyWayのラジオチャット</h2>
             </div>
         </div>
     </section>
