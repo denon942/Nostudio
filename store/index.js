@@ -36,7 +36,9 @@ export const state = () => ({
   //サムネイル
   thumbnail:'',
   // ユーザアイコン
-  user_image:''
+  user_image:'',
+  //配信情報
+  delivery_info:[]
 })
 
 export const mutations = {
@@ -51,6 +53,9 @@ export const mutations = {
   },
   set_thumbnail(state,payload){
       state.thumbnail = payload
+  },
+  delivery_info(state){
+      return state.delivery_info
   },
   user_regist(state,array){
     firebase.auth().createUserWithEmailAndPassword(
@@ -68,7 +73,7 @@ export const mutations = {
               firebase.firestore().collection("users").doc(user.uid)
               .set(array)
               .then(function () {
-                  $nuxt.$router.push('/demo')
+                  $nuxt.$router.push('/User/mypage')
               })
           } else {
               // User not logged in or has just logged out.
@@ -92,7 +97,7 @@ export const mutations = {
         // User logged in already or has just logged in.
         // ユーザーIDの取得
         // console.log(user.uid);
-        // this.user_id = user.uid
+        state.user_id = user.uid
         // ドキュメントIDをユーザIDとしているのでユーザIDを持ってきてそこからフィールド取り出し
         firebase.firestore().collection('users').doc(user.uid).get().then( doc => {
             console.log(doc.data())
@@ -112,6 +117,39 @@ export const mutations = {
     firebase.auth().signOut()
     $nuxt.$router.push('/')
   },
+  //配信
+  delivery(state,array){
+    // ユーザ情報の変更などに検知
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            // User logged in already or has just logged in.
+            // ユーザーIDの取得
+            console.log(user.uid);
+            // ユーザIDをドキュメントIDとしてコレクションにarrayの中身をフィールドとして追加
+            state.user_id = user.uid
+            firebase.firestore().collection("users").doc(state.user_id).collection('delivery').doc(state.user_id)
+            .set(array)
+            .then(function () {
+                // 正常にデータ保存できた時の処理
+                console.log('success')
+            })
+
+            firebase.firestore().collection("delivery").doc(state.user_id)
+            .set(array)
+            .then(function () {
+                // 正常にデータ保存できた時の処理
+                console.log('success')
+            })
+            $nuxt.$router.push('/demo')
+        } else {
+            // User not logged in or has just logged out.
+        }
+    })
+  },
+  delivery_info(state,a){
+    state.delivery_info = a
+    $nuxt.$router.push('/viewing')
+  },
 }
 
 export const getters = {
@@ -127,4 +165,7 @@ export const getters = {
   thumbnail(state) {
       return state.thumbnail
   },
+  delivery_info(state) {
+    return state.delivery_info
+  }
 }

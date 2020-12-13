@@ -17,19 +17,14 @@
                 </select>
 
                 <div>
-                    <p>Your id: <span id="my-id">{{peerId}}</span></p>
-                    <p>他のブラウザでこのIDをコールしましょう。</p>
-                    <h3>コールする</h3>
-                    <input v-model="calltoid" placeholder="call id">
-                    <button @click="makeCall" class="button--green">Call</button>
-                    <button @click="callOn" class="button--green">On</button>
-                    <button @click="callOff" class="button--green">Off</button>
+                    <button @click="callOn" class="button--green" v-if="flg">ミュート解除</button>
+                    <button @click="callOff" class="button--green" v-else>ミュート</button>
                 </div>
             </div>
         </div>
     </section>
     <!-- チャット -->
-    <Chat/>
+    <Chat />
 </v-list>
 </template>
 
@@ -49,7 +44,8 @@ export default {
         videos: [],
         localStream: null,
         peerId: '',
-        calltoid: ''
+        calltoid: '',
+        flg:false
     }),
     methods: {
         send: function () {
@@ -97,35 +93,43 @@ export default {
             });
         },
         callOn: function () {
-            if (this.peerId == '') {
+            if (this.peerId != '') {
                 //ミュート解除
                 this.localStream.getAudioTracks()[0].enabled = true
+                this.flg=false
             }
         },
         callOff: function () {
-            if (this.peerId == '') {
+            if (this.peerId != '') {
                 //ミュート
                 this.localStream.getAudioTracks()[0].enabled = false
+                this.flg=true
             }
         },
-        getCaht: async function () {
-            await firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').limit(50).get().then(snapshot => {
-                snapshot.forEach(doc => {
-                    //contentは要素
-                    //pushは配列データそのもの
-                    // this.allData.push(doc.data().content)
-                    this.comments_box.push({
-                        content: doc.data().content,
-                        createdAt: doc.data().createdAt.toDate().toLocaleTimeString().toLocaleString()
-                    })
-                })
-            })
-            this.comments = this.comments_box
-            console.log(this.comments_box)
-            this.comments_box = []
+        onAuth: function () {
+            this.$store.commit('onAuthStateChanged')
         },
     },
-    watch: {},
+    watch: {
+      user_id: function () {
+          if (this.user_id != '') {
+              firebase.firestore().collection("delivery").doc(this.user_id).set({
+                  peer: this.peerId,
+              }, {
+                  merge: true
+              })
+          }
+      },
+      peerId: function () {
+          if (this.user_id != '') {
+              firebase.firestore().collection("delivery").doc(this.user_id).set({
+                  peer: this.peerId,
+              }, {
+                  merge: true
+              })
+          }
+      },
+    },
     mounted: function () {
         this.peer = new Peer({
             key: this.APIKey,
@@ -156,11 +160,20 @@ export default {
                 }
             })
     },
-    components:{
-      Chat
+    computed: {
+        user_id() {
+            return this.$store.getters.user_id
+        },
+        user_name() {
+            return this.$store.getters.user_name
+        }
+    },
+    components: {
+        Chat
     },
     created: function () {
 
+        this.onAuth()
     }
 }
 </script>
