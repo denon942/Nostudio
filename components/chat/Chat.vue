@@ -42,11 +42,10 @@ export default {
                     userid: '001'
                 })
                 .then(
-                    this.getCaht(),
                     this.coment = ""
                 )
         },
-        getCaht: async function () {
+        getChat: async function () {
             await firebase.firestore().collection('room').doc('001').collection('comments').orderBy('createdAt', 'asc').limit(50).get().then(snapshot => {
                 snapshot.forEach(doc => {
                     //contentは要素
@@ -65,10 +64,11 @@ export default {
     },
     watch: {},
     mounted: function () {
-        this.getCaht()
+      firebase.firestore().collection('room').doc('001').collection('comments').onSnapshot(() => {
+          this.getChat()
+      })
     },
     created: function () {
-
     }
 }
 </script>

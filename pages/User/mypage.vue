@@ -1,8 +1,8 @@
 <template>
 <v-list three-line>
     <p>{{user_name}}</p>
-    <v-img max-height="450" max-width="600" v-model="thumbnail" v-if="thumbnail != ''" alt="アイコン" :src="thumbnail"></v-img>
-    <v-img max-width="400" v-else :src="user_image" alt="アイコン"></v-img>
+    <v-img max-height="450" max-width="600" v-model="thumbnail" v-if="thumbnail == ''" alt="アイコン" :src="thumbnail"></v-img>
+    <v-img max-height="450" max-width="600" v-else :src="thumbnail" alt="アイコン"></v-img>
     <input style="display: none" ref="input" type="file" accept="image/*,image/*,image/*" @change="selectedFile()" />
     <v-row>
         <v-col cols="12" sm="6" md="6">
@@ -25,7 +25,7 @@ export default {
         titleRules: [
             v => !!v || '入力欄が空白です。',
         ],
-
+        uploadImageUrl:''
     }),
     methods: {
         onAuth: function () {
@@ -43,7 +43,7 @@ export default {
             const fr = new FileReader()
             fr.readAsDataURL(file)
             fr.addEventListener('load', () => {
-                this.uploadImageUrl = fr.result
+                this.thumbnail = fr.result
                 // alert(this.uploadImageUrl);
             })
         },

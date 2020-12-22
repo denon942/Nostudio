@@ -35,7 +35,7 @@
           counter
           label="name"
           :rules="nameRules"
-          hint="ニックネームは10字以下で記入してください。"/>
+          hint="ニックネームは20字以下で記入してください。"/>
         <v-row justify="center">
           <v-col cols="auto">
             <v-btn
@@ -90,7 +90,7 @@ export default {
           // 名前
           nameRules:[
               v => !!v || '入力欄が空白です。',
-              v => (v&& v.length<=10) || '有効桁を超えた不正な値が入力されました。'
+              v => (v&& v.length<=20) || '有効桁を超えた不正な値が入力されました。'
           ],
         }
     },

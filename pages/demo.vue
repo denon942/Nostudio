@@ -45,11 +45,11 @@ export default {
         localStream: null,
         peerId: '',
         calltoid: '',
-        flg:false
+        flg: false
     }),
     methods: {
         send: function () {
-            //チャート送信
+            //チャット送信
             firebase.firestore().collection('room').doc('001').collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
@@ -96,14 +96,14 @@ export default {
             if (this.peerId != '') {
                 //ミュート解除
                 this.localStream.getAudioTracks()[0].enabled = true
-                this.flg=false
+                this.flg = false
             }
         },
         callOff: function () {
             if (this.peerId != '') {
                 //ミュート
                 this.localStream.getAudioTracks()[0].enabled = false
-                this.flg=true
+                this.flg = true
             }
         },
         onAuth: function () {
@@ -111,24 +111,24 @@ export default {
         },
     },
     watch: {
-      user_id: function () {
-          if (this.user_id != '') {
-              firebase.firestore().collection("delivery").doc(this.user_id).set({
-                  peer: this.peerId,
-              }, {
-                  merge: true
-              })
-          }
-      },
-      peerId: function () {
-          if (this.user_id != '') {
-              firebase.firestore().collection("delivery").doc(this.user_id).set({
-                  peer: this.peerId,
-              }, {
-                  merge: true
-              })
-          }
-      },
+        user_id: function () {
+            if (this.user_id != '') {
+                firebase.firestore().collection("delivery").doc(this.user_id).set({
+                    peer: this.peerId,
+                }, {
+                    merge: true
+                })
+            }
+        },
+        peerId: function () {
+            if (this.user_id != '') {
+                firebase.firestore().collection("delivery").doc(this.user_id).set({
+                    peer: this.peerId,
+                }, {
+                    merge: true
+                })
+            }
+        },
     },
     mounted: function () {
         this.peer = new Peer({

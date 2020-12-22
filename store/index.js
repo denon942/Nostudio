@@ -1,6 +1,7 @@
 import firebase from "firebase/app"
 import "firebase/auth"
 import "firebase/firestore"
+import "firebase/storage"
 // [vuex] do not mutate vuex store state outside mutation handlers.
 //保留
 export  const  strict  =  false
@@ -73,7 +74,7 @@ export const mutations = {
               firebase.firestore().collection("users").doc(user.uid)
               .set(array)
               .then(function () {
-                  $nuxt.$router.push('/User/mypage')
+                  $nuxt.$router.push('/user/mypage')
               })
           } else {
               // User not logged in or has just logged out.
@@ -88,7 +89,7 @@ export const mutations = {
         array['email'],
         array['password'])
     .then(()=>{
-        $nuxt.$router.push('/User/mypage')
+        $nuxt.$router.push('/user/mypage')
     })
   },
   onAuthStateChanged(state) {

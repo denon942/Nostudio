@@ -18,7 +18,23 @@
                 :key="card.title"
                 :cols="card.flex"
               >
-                <v-card>
+                <v-card v-if="card.title=='視聴'" to="/list">
+                  <v-img
+                    :src="card.src"
+                    class="white--text align-end"
+                    gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)"
+                  >
+                    <v-card-title v-text="card.title"></v-card-title>
+                  </v-img>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn icon>
+                      <v-icon>mdi-radio</v-icon>
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+                <v-card v-else>
                   <v-img
                     :src="card.src"
                     class="white--text align-end"
@@ -53,7 +69,7 @@ export default {
       return{
         cards: [
           { title: 'Nostudio', src:require("@/assets/radio.png"), flex: 12 },
-          { title: '視聴', src:require("@/assets/viewing.jpg"), flex: 6 },
+          { title: '視聴', src:require("@/assets/viewing.jpg"), flex: 6},
           { title: '配信', src:require("@/assets/delivery.png"), flex: 6 },
         ]
       }
