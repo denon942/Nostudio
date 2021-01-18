@@ -2,7 +2,7 @@
 <v-list three-line>
     <section class="container">
         <div>
-            <logo />
+            <v-img max-height="450" max-width="600" :src="thumbnail"></v-img>
             <video id="their-video" width="200" autoplay playsinline></video>
             <video id="my-video" muted="true" width="200" autoplay playsinline></video>
 
@@ -31,7 +31,8 @@ export default {
         peerId: '',
         calltoid: '',
         deliveryId: '',
-        flg:false
+        flg: false,
+        thumbnail: ''
     }),
     methods: {
 
@@ -49,12 +50,12 @@ export default {
         },
     },
     watch: {
-      deliveryId:function(){
-        this.calltoid=this.deliveryId
-        if(this.deliveryId!=''){
-          this.makeCall()
+        deliveryId: function () {
+            this.calltoid = this.deliveryId
+            if (this.deliveryId != '') {
+                this.makeCall()
+            }
         }
-      }
     },
     mounted: function () {
         this.peer = new Peer({
@@ -72,16 +73,16 @@ export default {
         });
 
         if (this.items.user_id != '') {
-            firebase.firestore().collection('delivery').doc('OJcNACQyCvNASCF2PJ6ktMDXFSu2').onSnapshot(() => {
-                firebase.firestore().collection('delivery').doc('OJcNACQyCvNASCF2PJ6ktMDXFSu2').get().then(doc => {
-                    this.deliveryId = doc.data().peer
-                    this.flg = doc.data().flg
-                })
+            firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
+                    firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
+                        this.deliveryId = doc.data().peer
+                        this.flg = doc.data().flg
+                        this.thumbnail = doc.data().thumbnail
+                    })
             })
         }
-
-    },
-    computed: {
+},
+computed: {
         items() {
             return this.$store.getters.delivery_info
         },

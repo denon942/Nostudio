@@ -2,7 +2,7 @@
 <v-list three-line>
     <section class="container">
         <div>
-            <logo />
+            <v-img max-height="450" max-width="600" :src="thumbnail"></v-img>
             <video id="their-video" width="200" autoplay playsinline></video>
             <video id="my-video" muted="true" width="200" autoplay playsinline></video>
 
@@ -20,6 +20,9 @@
                     <button @click="callOn" class="button--green" v-if="flg">ミュート解除</button>
                     <button @click="callOff" class="button--green" v-else>ミュート</button>
                 </div>
+                <v-btn @click="close">
+                    配信停止
+                </v-btn>
             </div>
         </div>
     </section>
@@ -45,7 +48,8 @@ export default {
         localStream: null,
         peerId: '',
         calltoid: '',
-        flg: false
+        flg: false,
+        thumbnail:''
     }),
     methods: {
         send: function () {
@@ -65,7 +69,6 @@ export default {
                 this.connectLocalAudio();
             }
         },
-
         connectLocalAudio: async function () {
             const constraints = {
                 audio: this.selectedAudio ? {
@@ -109,6 +112,10 @@ export default {
         onAuth: function () {
             this.$store.commit('onAuthStateChanged')
         },
+        close: function () {
+            //配信停止
+            this.$store.commit('closeDelivery')
+        }
     },
     watch: {
         user_id: function () {
@@ -159,6 +166,14 @@ export default {
                     }
                 }
             })
+
+        if (this.user_id != '') {
+            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
+                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
+                    this.thumbnail = doc.data().thumbnail
+                })
+            })
+        }
     },
     computed: {
         user_id() {

@@ -1,7 +1,7 @@
 <template>
 <v-list class="overflow-y-auto" max-height="500" height="500" elevation="0" tile>
     <v-list-item v-for="(comment,index) in comments" :key="index" :index="index" class="black--text">
-        <v-list-item-subtitle class="text--primary" @click="request(index)">
+        <v-list-item-subtitle class="text--primary" @click="request(index)" v-if="comment.flg==true">
             タイトル:{{comment.title}}
             <v-img max-height="450" max-width="600" :src="comment.thumbnail"></v-img>
         </v-list-item-subtitle>
@@ -45,4 +45,5 @@ export default {
     components: {},
     created: function () {}
 }
+//配信リスト
 </script>

@@ -51,7 +51,7 @@ export default {
             this.array['title'] = this.title
             this.array['user_id'] = this.user_id
             this.array['thumbnail'] = this.thumbnail
-            this.array['flg'] = false
+            this.array['flg'] = true
             this.$store.commit('delivery', this.array)
         }
     },
