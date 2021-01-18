@@ -73,13 +73,13 @@ export default {
       items: [
         {
           icon: 'mdi-chart-bubble',
-          title: 'Inspire',
-          to: '/inspire'
+          title: 'mypage',
+          to: '/user/mypage'
         },
         {
           icon: 'mdi-chart-bubble',
-          title: 'chat',
-          to: '/demo'
+          title: 'list',
+          to: '/list'
         },
         {
           icon: 'mdi-chart-bubble',

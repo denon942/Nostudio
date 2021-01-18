@@ -29,6 +29,13 @@
           counter
           hint="パスワードは8字以上20字以下にしてください。"
           :rules="registpassRules"/>
+        <v-text-field
+          prepend-icon="mdi-account"
+          v-model="name"
+          counter
+          label="name"
+          :rules="nameRules"
+          hint="ニックネームは20字以下で記入してください。"/>
         <v-row justify="center">
           <v-col cols="auto">
             <v-btn
@@ -63,6 +70,7 @@ export default {
           array: {},
           mailaddress: '',
           password: '',
+          name:'',
           valid: true,
           showPassword:false,
           // メールアドレスの登録
@@ -79,12 +87,18 @@ export default {
               v => (v&& v.length<=20) || '有効桁を超えた不正な値が入力されました。',
               v => /[a-zA-Z\d]$/.test(v) || '半角英数字のみで入力してください。'
           ],
+          // 名前
+          nameRules:[
+              v => !!v || '入力欄が空白です。',
+              v => (v&& v.length<=20) || '有効桁を超えた不正な値が入力されました。'
+          ],
         }
     },
     methods: {
         signUp:function(){
             this.array['email'] = this.mailaddress
             this.array['password'] = this.password
+            this.array['name'] = this.name
             this.$store.commit('user_regist',this.array)
         },
         signOut:function(){
