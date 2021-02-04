@@ -17,7 +17,7 @@ export const state = () => ({
   // 氏名・かな
   user_fname: '',
   user_fname_kana: '',
-  user_name: '',
+  user_name: 'ゲスト',
   user_name_kana: '',
   // 住所
   user_post:'',

@@ -10,9 +10,9 @@
                 <h2>Nuxt.js + SkyWayのラジオチャット</h2>
             </div>
         </div>
+        <!-- チャット -->
+        <Chat />
     </section>
-    <!-- チャット -->
-    <Chat />
 </v-list>
 </template>
 

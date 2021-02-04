@@ -1,34 +1,43 @@
 <template>
-<v-list three-line>
-    <section class="container">
-        <div>
-            <v-img max-height="450" max-width="600" :src="thumbnail"></v-img>
-            <video id="their-video" width="200" autoplay playsinline></video>
-            <video id="my-video" muted="true" width="200" autoplay playsinline></video>
 
-            <div class="main">
-                <h2>Nuxt.js + SkyWayのビデオチャット</h2>
-                マイク:
-                <select v-model="selectedAudio" @change="onChange">
-                    <option disabled value="">Please select one</option>
-                    <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
-                        {{ audio.text }}
-                    </option>
-                </select>
-
-                <div>
-                    <button @click="callOn" class="button--green" v-if="flg">ミュート解除</button>
-                    <button @click="callOff" class="button--green" v-else>ミュート</button>
-                </div>
-                <v-btn @click="close">
-                    配信停止
-                </v-btn>
-            </div>
-        </div>
-    </section>
-    <!-- チャット -->
-    <Chat />
-</v-list>
+<v-container>
+    <v-row justify="center">
+        <v-col cols=12 lg="8" md="8" sm="12" xs="12">
+            <v-card class="pa-2">
+                <v-row justify="center">
+                    <v-col cols="auto">
+                        <v-img max-height="400" max-width="600" :src="thumbnail"></v-img>
+                        <audio id="their-video" width="200" autoplay playsinline></audio>
+                        <audio id="my-video" muted="true" width="200" autoplay playsinline></audio>
+                    </v-col>
+                </v-row>
+            </v-card>
+            <h2>タイトル名：{{title}} </h2>
+            <v-row>
+                <v-col cols="auto">
+                    マイク:
+                    <select v-model="selectedAudio" @change="onChange">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="(audio, key, index) in audios" v-bind:key="index" :value="audio.value">
+                            {{ audio.text }}
+                        </option>
+                    </select>
+                </v-col>
+                <v-col cols="auto">
+                    <v-btn @click="callOn" class="button--green" v-if="flg"><v-icon>mdi-microphone-off</v-icon></v-btn>
+                    <v-btn @click="callOff" class="button--green" v-else><v-icon>mdi-microphone</v-icon></v-btn>
+                    <v-btn @click="close">
+                        配信停止
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-col>
+        <v-col cols="12" lg="4" md="4" sm="12" xs="12">
+            <!-- チャット -->
+            <Chat />
+        </v-col>
+    </v-row>
+</v-container>
 </template>
 
 <script>
@@ -49,7 +58,8 @@ export default {
         peerId: '',
         calltoid: '',
         flg: false,
-        thumbnail:''
+        thumbnail: '',
+        title: ''
     }),
     methods: {
         send: function () {
@@ -57,7 +67,7 @@ export default {
             firebase.firestore().collection('room').doc('001').collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
-                    userid: '001'
+                    userName: this.user_name
                 })
                 .then(
                     this.getCaht(),
@@ -115,6 +125,16 @@ export default {
         close: function () {
             //配信停止
             this.$store.commit('closeDelivery')
+        },
+        image:function(){
+          if (this.user_id != '') {
+            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
+                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
+                    this.thumbnail = doc.data().thumbnail,
+                        this.title = doc.data().title
+                })
+            })
+        }
         }
     },
     watch: {
@@ -125,6 +145,7 @@ export default {
                 }, {
                     merge: true
                 })
+                this.image()
             }
         },
         peerId: function () {
@@ -136,6 +157,7 @@ export default {
                 })
             }
         },
+
     },
     mounted: function () {
         this.peer = new Peer({
@@ -167,13 +189,7 @@ export default {
                 }
             })
 
-        if (this.user_id != '') {
-            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
-                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
-                    this.thumbnail = doc.data().thumbnail
-                })
-            })
-        }
+      this.image()
     },
     computed: {
         user_id() {
@@ -187,7 +203,6 @@ export default {
         Chat
     },
     created: function () {
-
         this.onAuth()
     }
 }
