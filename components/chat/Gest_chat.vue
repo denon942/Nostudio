@@ -38,8 +38,8 @@ export default {
     methods: {
         send: function () {
             //チャート送信
-            firebase.firestore().collection('users').doc(this.user_id)
-                .collection('room').doc(this.user_id)
+            firebase.firestore().collection('users').doc(this.items.user_id)
+                .collection('room').doc(this.items.user_id)
                 .collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
@@ -50,8 +50,8 @@ export default {
                 )
         },
         getChat: async function () {
-            await firebase.firestore().collection('users').doc(this.user_id)
-                .collection('room').doc(this.user_id)
+            await firebase.firestore().collection('users').doc(this.items.user_id)
+                .collection('room').doc(this.items.user_id)
                 .collection('comments').orderBy('createdAt', 'asc').limit(50).get().then(snapshot => {
                     snapshot.forEach(doc => {
                         //contentは要素
@@ -76,15 +76,16 @@ export default {
         user_name() {
             return this.$store.getters.user_name
         },
-        user_id() {
-            return this.$store.getters.user_id
+        items() {
+            return this.$store.getters.delivery_info
         },
     },
     watch: {},
     mounted: function () {
-        if (this.user_id != '') {
-            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
-                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
+      console.log(this.items.user_id)
+        if (this.items.user_id != '') {
+            firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
+                firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
                     this.deliveryId = doc.data().peer
                     this.flg = doc.data().flg
                     this.thumbnail = doc.data().thumbnail,
@@ -93,8 +94,8 @@ export default {
                 })
             })
         }
-        firebase.firestore().collection('users').doc(this.user_id)
-            .collection('room').doc(this.user_id)
+        firebase.firestore().collection('users').doc(this.items.user_id)
+            .collection('room').doc(this.items.user_id)
             .collection('comments').onSnapshot(() => {
                 this.getChat()
             })

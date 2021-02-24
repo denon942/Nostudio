@@ -1,8 +1,8 @@
 <template>
 <v-list three-line>
     <p>ユーザー名：{{user_name}}</p>
-    <v-img max-height="450" max-width="600" v-model="thumbnail" v-if="thumbnail == ''" alt="アイコン" :src="thumbnail"></v-img>
-    <v-img max-height="450" max-width="600" v-else :src="thumbnail" alt="アイコン"></v-img>
+    <v-img  max-height="400" max-width="600" v-model="thumbnail" v-if="thumbnail == ''" alt="アイコン" :src="thumbnail"></v-img>
+    <v-img  max-height="400" max-width="600" v-else :src="thumbnail" alt="アイコン"></v-img>
     <input style="display: none" ref="input" type="file" accept="image/*,image/*,image/*" @change="selectedFile()" />
     <v-row>
         <v-col cols="12" sm="6" md="6">
@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import firebase from '@/plugins/firebase';
 export default {
     name: "Mypage",
     data: () => ({
@@ -51,8 +50,8 @@ export default {
             this.array['title'] = this.title
             this.array['user_id'] = this.user_id
             this.array['thumbnail'] = this.thumbnail
-            this.array['flg'] = true
-            this.$store.commit('delivery', this.array)
+            this.array['flg'] = false
+            this.$store.commit('delivery',this.array)
         }
     },
     watch: {},

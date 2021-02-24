@@ -1,5 +1,4 @@
 <template>
-
 <v-container>
     <v-row justify="center">
         <v-col cols=12 lg="8" md="8" sm="12" xs="12">
@@ -24,9 +23,16 @@
                     </select>
                 </v-col>
                 <v-col cols="auto">
-                    <v-btn @click="callOn" class="button--green" v-if="flg"><v-icon>mdi-microphone-off</v-icon></v-btn>
-                    <v-btn @click="callOff" class="button--green" v-else><v-icon>mdi-microphone</v-icon></v-btn>
-                    <v-btn @click="close">
+                    <v-btn @click="callOn" class="button--green" v-if="flg">
+                        <v-icon>mdi-microphone-off</v-icon>
+                    </v-btn>
+                    <v-btn @click="callOff" class="button--green" v-else>
+                        <v-icon>mdi-microphone</v-icon>
+                    </v-btn>
+                    <v-btn @click="openOrClose(callFlg)" v-if="callFlg">
+                        配信開始
+                    </v-btn>
+                    <v-btn @click="openOrClose(callFlg)" v-else>
                         配信停止
                     </v-btn>
                 </v-col>
@@ -59,12 +65,16 @@ export default {
         calltoid: '',
         flg: false,
         thumbnail: '',
-        title: ''
+        title: '',
+        //配信開始・停止
+        callFlg: true
     }),
     methods: {
         send: function () {
             //チャット送信
-            firebase.firestore().collection('room').doc('001').collection('comments').add({
+            firebase.firestore().collection('users').doc(items.user_id)
+                .collection('room').doc(items.user_id)
+                .collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
                     userName: this.user_name
@@ -89,13 +99,13 @@ export default {
             }
 
             const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            document.getElementById('my-video').srcObject = stream;
+            // document.getElementById('my-video').srcObject = stream;
             this.localStream = stream;
         },
 
         makeCall: function () {
-            const call = this.peer.call(this.calltoid, this.localStream);
-            this.connect(call);
+            // const call = this.peer.call(this.calltoid, this.localStream);
+            // this.connect(call);
         },
 
         connect: function (call) {
@@ -122,19 +132,25 @@ export default {
         onAuth: function () {
             this.$store.commit('onAuthStateChanged')
         },
-        close: function () {
+        openOrClose: function (a) {
             //配信停止
-            this.$store.commit('closeDelivery')
+            this.$store.commit('openOrClose', a)
+            this.callFlg = !this.callFlg
+            if (a == false) {
+                // const call = this.peer.call(this.calltoid, this.localStream);
+                window.location.href = '/user/mypage'
+                this.peer.destroy()
+            }
         },
-        image:function(){
-          if (this.user_id != '') {
-            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
-                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
-                    this.thumbnail = doc.data().thumbnail,
-                        this.title = doc.data().title
+        image: function () {
+            if (this.user_id != '') {
+                firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
+                    firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
+                        this.thumbnail = doc.data().thumbnail,
+                            this.title = doc.data().title
+                    })
                 })
-            })
-        }
+            }
         }
     },
     watch: {
@@ -189,7 +205,7 @@ export default {
                 }
             })
 
-      this.image()
+        this.image()
     },
     computed: {
         user_id() {

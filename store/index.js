@@ -151,7 +151,7 @@ export const mutations = {
     state.delivery_info = a
     $nuxt.$router.push('/viewing')
   },
-  closeDelivery(state){
+  openOrClose(state,a){
     //配信停止
     //ユーザID取得
     firebase.auth().onAuthStateChanged((user) => {
@@ -159,10 +159,22 @@ export const mutations = {
             // ユーザーIDの取得
             state.user_id = user.uid
             //配信フラグ変更
-            firebase.firestore().collection('delivery').doc(state.user_id)
-            .update({
-                flg:false
-            })
+            if(a){
+              firebase.firestore().collection('delivery').doc(state.user_id)
+              .update({
+                  flg:a
+              })
+            }else{
+              firebase.firestore().collection('delivery').doc(state.user_id)
+              .update({
+                  flg:a
+              })
+
+              firebase.firestore().collection('users').doc(this.user_id)
+                .collection('room').doc(this.user_id)
+                .collection('comments').delete()
+            }
+
 
             // firebase.firestore().collection("users").doc(state.user_id).collection('delivery').doc(state.user_id)
             // .update({
