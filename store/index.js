@@ -17,7 +17,7 @@ export const state = () => ({
   // 氏名・かな
   user_fname: '',
   user_fname_kana: '',
-  user_name: '',
+  user_name: 'ゲスト',
   user_name_kana: '',
   // 住所
   user_post:'',
@@ -129,17 +129,21 @@ export const mutations = {
             // ユーザIDをドキュメントIDとしてコレクションにarrayの中身をフィールドとして追加
             state.user_id = user.uid
             firebase.firestore().collection("users").doc(state.user_id).collection('delivery').doc(state.user_id)
-            .set(array)
+            .set(array, {
+                    merge: true
+                })
             .then(function () {
                 // 正常にデータ保存できた時の処理
-                console.log('success')
+                //console.log('success')
             })
 
             firebase.firestore().collection("delivery").doc(state.user_id)
-            .set(array)
+            .set(array, {
+                    merge: true
+                })
             .then(function () {
                 // 正常にデータ保存できた時の処理
-                console.log('success')
+                //console.log('success')
             })
             $nuxt.$router.push('/demo')
         } else {
@@ -151,26 +155,49 @@ export const mutations = {
     state.delivery_info = a
     $nuxt.$router.push('/viewing')
   },
-  closeDelivery(state){
-    //配信停止
+  openOrClose(state,a){
+    //配信開始停止
     //ユーザID取得
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
             // ユーザーIDの取得
             state.user_id = user.uid
             //配信フラグ変更
-            firebase.firestore().collection('delivery').doc(state.user_id)
-            .update({
-                flg:false
-            })
+            if(a){
+              firebase.firestore().collection('delivery').doc(state.user_id)
+              .update({
+                  flg:a
+              })
+            }else{
+              firebase.firestore().collection('delivery').doc(state.user_id)
+              .update({
+                  flg:a
+              })
+              console.log('delete')
+              //コメント削除
+              firebase.firestore().collection('users').doc(state.user_id)
+                .collection('room').doc(state.user_id)
+                .collection('comments').orderBy('createdAt', 'asc').get().then(snapshot => {
+                        snapshot.forEach(doc => {
+                            doc.ref.delete()
+                        })
+                        if(snapshot.size != 0){
+                          this.commit('openOrClose', false)
+                        }else if(snapshot.size == 0){
+                          window.location.href = '/user/mypage'
+                        }
+                    })
+            }
+
 
             // firebase.firestore().collection("users").doc(state.user_id).collection('delivery').doc(state.user_id)
             // .update({
             //     flg:false
             // })
-            $nuxt.$router.push('/demo')
+            // $nuxt.$router.push('/demo')
         } else {
             // User not logged in or has just logged out.
+
         }
     })
   }

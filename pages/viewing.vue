@@ -1,27 +1,34 @@
 <template>
-<v-list three-line>
-    <section class="container">
-        <div>
-            <v-img max-height="450" max-width="600" :src="thumbnail"></v-img>
-            <video id="their-video" width="200" autoplay playsinline></video>
-            <video id="my-video" muted="true" width="200" autoplay playsinline></video>
-
-            <div class="main">
-                <h2>Nuxt.js + SkyWayのラジオチャット</h2>
-            </div>
-        </div>
-    </section>
-    <!-- チャット -->
-    <Chat />
-</v-list>
+<v-container>
+    <v-row justify="center">
+        <v-col cols=12 lg="8" md="8" sm="12" xs="12">
+            <v-card class="pa-2">
+                <v-row justify="center">
+                    <v-col cols="auto">
+                        <v-img max-height="400" max-width="600" :src="thumbnail"></v-img>
+                        <audio id="their-video" width="200" autoplay playsinline></audio>
+                        <audio id="my-video" muted="true" width="200" autoplay playsinline></audio>
+                    </v-col>
+                </v-row>
+            </v-card>
+            <h2>タイトル名：{{title}} </h2>
+            <h3 v-if="!flg">配信は終了いたしました</h3>
+        </v-col>
+        <v-col cols="12" lg="4" md="4" sm="12" xs="12">
+            <!-- チャット -->
+            <Chat />
+        </v-col>
+    </v-row>
+</v-container>
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
 import Peer from 'skyway-js';
-import Chat from '@/components/chat/Chat'
+import Chat from '@/components/chat/Gest_chat'
+
 export default {
-    name: "ChatBoard",
+    name: "Viewing",
     data: () => ({
         APIKey: process.env.VUE_APP_API_SKYWAY,
         selectedAudio: '',
@@ -32,10 +39,10 @@ export default {
         calltoid: '',
         deliveryId: '',
         flg: false,
-        thumbnail: ''
+        thumbnail: '',
+        title: ''
     }),
     methods: {
-
         makeCall: function () {
             const call = this.peer.call(this.calltoid, this.localStream);
             this.connect(call);
@@ -51,11 +58,12 @@ export default {
     },
     watch: {
         deliveryId: function () {
+            //取得したpeerで配信元の音声を呼び出す
             this.calltoid = this.deliveryId
             if (this.deliveryId != '') {
                 this.makeCall()
             }
-        }
+        },
     },
     mounted: function () {
         this.peer = new Peer({
@@ -73,16 +81,21 @@ export default {
         });
 
         if (this.items.user_id != '') {
+            //一覧から取得したIdから配信情報を取得
             firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
-                    firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
-                        this.deliveryId = doc.data().peer
-                        this.flg = doc.data().flg
-                        this.thumbnail = doc.data().thumbnail
-                    })
+                firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
+                    this.deliveryId = doc.data().peer
+                    this.flg = doc.data().flg
+                    this.thumbnail = doc.data().thumbnail,
+                    this.title = doc.data().title
+                })
             })
+            // if(!this.flg){
+            //   this.peer.destroy()
+            // }
         }
-},
-computed: {
+    },
+    computed: {
         items() {
             return this.$store.getters.delivery_info
         },

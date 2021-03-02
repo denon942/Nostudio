@@ -74,6 +74,7 @@ export default {
             this.array['password'] = this.password
             this.$store.commit('user_login', this.array)
         },
+        //ログインのローディング後ダモーダル非表示・ローディング処理を閉じる
         close() {
             this.dialog = false
             this.loading = false
@@ -89,7 +90,7 @@ export default {
         });
     },
     watch: {
-        // ログインアニメーションなど試作段階でできてないボタンなど変化させたい
+        // ログインアニメーションボタンなど変化させたい
         // 3秒間ローディング
         loading(val) {
             val && setTimeout(async () => {
@@ -102,7 +103,7 @@ export default {
                 }
             }, 3000)
         },
-        //   モーダル初期化
+        //   モーダル非表示後初期化
         dialog: function () {
             if (this.authenticatedUser == false) {
                 if (this.dialog === true) return

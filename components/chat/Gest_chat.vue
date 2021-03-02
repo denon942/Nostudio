@@ -31,7 +31,7 @@ import firebase from '@/plugins/firebase';
 export default {
     //取得したuser_idが紛らわしいためuserとgestで
     //チャットコンポーネントを分ける
-    name: "ChatBoard",
+    name: "GestChatBoard",
     data: () => ({
         comments: [],
         comments_box: [],
@@ -46,9 +46,9 @@ export default {
     }),
     methods: {
         send: function () {
-            //チャット送信
-            firebase.firestore().collection('users').doc(this.user_id)
-                .collection('room').doc(this.user_id)
+            //チャート送信
+            firebase.firestore().collection('users').doc(this.items.user_id)
+                .collection('room').doc(this.items.user_id)
                 .collection('comments').add({
                     content: this.coment,
                     createdAt: new Date(),
@@ -59,9 +59,8 @@ export default {
                 )
         },
         getChat: async function () {
-            //コメント欄取得
-            await firebase.firestore().collection('users').doc(this.user_id)
-                .collection('room').doc(this.user_id)
+            await firebase.firestore().collection('users').doc(this.items.user_id)
+                .collection('room').doc(this.items.user_id)
                 .collection('comments').orderBy('createdAt', 'asc').limit(50).get().then(snapshot => {
                     snapshot.forEach(doc => {
                         //contentは要素
@@ -75,7 +74,7 @@ export default {
                     })
                 })
             this.comments = this.comments_box
-            //console.log(this.comments_box)
+            console.log(this.comments_box)
             this.comments_box = []
         },
         onAuth: function () {
@@ -86,28 +85,26 @@ export default {
         user_name() {
             return this.$store.getters.user_name
         },
-        user_id() {
-            return this.$store.getters.user_id
+        items() {
+            return this.$store.getters.delivery_info
         },
     },
     watch: {},
     mounted: function () {
-        if (this.user_id != '') {
-            //登録した配信情報取得
-            //vue-formatでインデントがthisや=に揃う
-            firebase.firestore().collection('delivery').doc(this.user_id).onSnapshot(() => {
-                firebase.firestore().collection('delivery').doc(this.user_id).get().then(doc => {
-                    this.deliveryId = doc.data().peer,
-                        this.flg = doc.data().flg,
-                        this.thumbnail = doc.data().thumbnail,
+        console.log(this.items.user_id)
+        if (this.items.user_id != '') {
+            firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
+                firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
+                    this.deliveryId = doc.data().peer
+                    this.flg = doc.data().flg
+                    this.thumbnail = doc.data().thumbnail,
                         this.title = doc.data().title,
                         this.userId = doc.data().user_id
                 })
             })
         }
-        //コメント欄リアルタイム実装
-        firebase.firestore().collection('users').doc(this.user_id)
-            .collection('room').doc(this.user_id)
+        firebase.firestore().collection('users').doc(this.items.user_id)
+            .collection('room').doc(this.items.user_id)
             .collection('comments').onSnapshot(() => {
                 this.getChat()
             })

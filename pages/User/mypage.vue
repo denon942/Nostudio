@@ -1,12 +1,12 @@
 <template>
 <v-list three-line>
-    <p>{{user_name}}</p>
-    <v-img max-height="450" max-width="600" v-model="thumbnail" v-if="thumbnail == ''" alt="アイコン" :src="thumbnail"></v-img>
-    <v-img max-height="450" max-width="600" v-else :src="thumbnail" alt="アイコン"></v-img>
+    <p>ユーザー名：{{user_name}}</p>
+    <v-img  max-height="400" max-width="600" v-model="thumbnail" v-if="thumbnail == ''" alt="アイコン" :src="thumbnail"></v-img>
+    <v-img  max-height="400" max-width="600" v-else :src="thumbnail" alt="アイコン"></v-img>
     <input style="display: none" ref="input" type="file" accept="image/*,image/*,image/*" @change="selectedFile()" />
     <v-row>
         <v-col cols="12" sm="6" md="6">
-            <v-text-field prepend-icon="mdi-email" class="pt-6" v-model="title" :rules="titleRules" counter label="Title" hint="配信タイトル" required />
+            <v-text-field prepend-icon="mdi-subtitles" class="pt-6" v-model="title" :rules="titleRules" counter label="Title" hint="配信タイトル" required />
         </v-col>
     </v-row>
     <v-btn elevation="2" dark @click="btnclick()">画像選択</v-btn>
@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import firebase from '@/plugins/firebase';
 export default {
     name: "Mypage",
     data: () => ({
@@ -48,11 +47,12 @@ export default {
             })
         },
         delivery: function () {
+            //配信情報
             this.array['title'] = this.title
             this.array['user_id'] = this.user_id
             this.array['thumbnail'] = this.thumbnail
-            this.array['flg'] = true
-            this.$store.commit('delivery', this.array)
+            this.array['flg'] = false
+            this.$store.commit('delivery',this.array)
         }
     },
     watch: {},
