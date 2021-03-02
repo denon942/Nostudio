@@ -9,31 +9,40 @@
             </v-list-item-subtitle>
         </v-list-item>
     </v-list>
-    <v-card class="grey display-1  pa-0 ma-0" height="50" elevation="0" tile>
-        <v-row class="ma-0 pa-0" justify="center">
-            <v-col>
-                <v-text-field dense label="Message" class="ma-0" color="black" v-model="coment"></v-text-field>
-            </v-col>
-            <v-col cols="2" class="ma-0 pa-0 py-1">
-                <v-btn class="pa-0 ma-0 ml-1" tile large color="teal" icon @click="send">
-                    <v-icon class="pa-0 ma-0" color="white">mdi-send</v-icon>
-                </v-btn>
-            </v-col>
-        </v-row>
+    <v-card class="grey display-1  pa-0 ma-0 pt-1" max-height="60" min-height="50" elevation="0" tile>
+        <v-form ref="form" v-model="valid">
+            <v-row class="ma-0 pa-0" justify="center">
+                <v-col>
+                    <v-text-field dense label="Message" class="ma-0" color="black" v-model="coment" :rules="chatRules"></v-text-field>
+                </v-col>
+                <v-col cols="2" class="ma-0 pa-0 py-1">
+                    <v-btn class="pa-0 ma-0 ml-1" tile large color="teal" icon @click="send" :disabled="!valid">
+                        <v-icon class="pa-0 ma-0" color="white">mdi-send</v-icon>
+                    </v-btn>
+                </v-col>
+            </v-row>
+        </v-form>
     </v-card>
 </v-list>
 </template>
 
 <script>
 import firebase from '@/plugins/firebase';
-import Peer from 'skyway-js';
 export default {
-    name: "ChatBoard",
+    //取得したuser_idが紛らわしいためuserとgestで
+    //チャットコンポーネントを分ける
+    name: "GestChatBoard",
     data: () => ({
         comments: [],
         comments_box: [],
         coment: '',
-        userId:''
+        userId: '',
+        valid: true,
+        //入力チェック
+        chatRules: [
+            v => !!v || '入力欄が空白です。',
+            v => (v && v.length <= 30) || '30字以内で入力してください'
+        ],
     }),
     methods: {
         send: function () {
@@ -82,15 +91,15 @@ export default {
     },
     watch: {},
     mounted: function () {
-      console.log(this.items.user_id)
+        console.log(this.items.user_id)
         if (this.items.user_id != '') {
             firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
                 firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
                     this.deliveryId = doc.data().peer
                     this.flg = doc.data().flg
                     this.thumbnail = doc.data().thumbnail,
-                    this.title = doc.data().title,
-                    this.userId = doc.data().user_id
+                        this.title = doc.data().title,
+                        this.userId = doc.data().user_id
                 })
             })
         }

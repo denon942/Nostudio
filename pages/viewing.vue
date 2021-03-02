@@ -28,7 +28,7 @@ import Peer from 'skyway-js';
 import Chat from '@/components/chat/Gest_chat'
 
 export default {
-    name: "ChatBoard",
+    name: "Viewing",
     data: () => ({
         APIKey: process.env.VUE_APP_API_SKYWAY,
         selectedAudio: '',
@@ -58,6 +58,7 @@ export default {
     },
     watch: {
         deliveryId: function () {
+            //取得したpeerで配信元の音声を呼び出す
             this.calltoid = this.deliveryId
             if (this.deliveryId != '') {
                 this.makeCall()
@@ -80,6 +81,7 @@ export default {
         });
 
         if (this.items.user_id != '') {
+            //一覧から取得したIdから配信情報を取得
             firebase.firestore().collection('delivery').doc(this.items.user_id).onSnapshot(() => {
                 firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
                     this.deliveryId = doc.data().peer

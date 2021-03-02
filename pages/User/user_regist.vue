@@ -73,6 +73,7 @@ export default {
           name:'',
           valid: true,
           showPassword:false,
+          //入力チェック
           // メールアドレスの登録
           registemailRules: [
               v => !!v || '入力欄が空白です。',
@@ -96,12 +97,14 @@ export default {
     },
     methods: {
         signUp:function(){
+            //ユーザ登録
             this.array['email'] = this.mailaddress
             this.array['password'] = this.password
             this.array['name'] = this.name
             this.$store.commit('user_regist',this.array)
         },
         signOut:function(){
+            //ログアウト
             this.$store.commit('logout')
         }
     },

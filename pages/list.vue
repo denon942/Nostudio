@@ -18,15 +18,14 @@ export default {
         comments_box: []
     }),
     methods: {
+        //視聴ページに一覧から選択した情報をViewingに
         request(a) {
             this.$store.commit('delivery_info', this.comments[a])
         },
         getList() {
+            //配信されているものをflgで管理しtruw表示・false非表示
             firebase.firestore().collection("delivery").get().then(async snapshot => {
                 await snapshot.forEach(doc => {
-                    //contentは要素
-                    //pushは配列データそのもの
-                    // this.allData.push(doc.data().content)
                     this.comments_box.push({
                         user_id: doc.data().user_id,
                         title: doc.data().title,
@@ -42,10 +41,10 @@ export default {
     },
     watch: {},
     mounted: function () {
+        //deliveryコレクションに変化があれば一覧を取得し直し表示する
         firebase.firestore().collection("delivery").onSnapshot(() => {
             this.getList()
         })
-
     },
     computed: {},
     components: {},

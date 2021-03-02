@@ -47,6 +47,7 @@ export default {
             })
         },
         delivery: function () {
+            //配信情報
             this.array['title'] = this.title
             this.array['user_id'] = this.user_id
             this.array['thumbnail'] = this.thumbnail

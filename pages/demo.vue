@@ -63,6 +63,7 @@ export default {
         localStream: null,
         peerId: '',
         calltoid: '',
+        //ミュート切り替え
         flg: false,
         thumbnail: '',
         title: '',
@@ -137,9 +138,17 @@ export default {
             this.$store.commit('openOrClose', a)
             this.callFlg = !this.callFlg
             if (a == false) {
-                // const call = this.peer.call(this.calltoid, this.localStream);
-                window.location.href = '/user/mypage'
+                //音声の通信切断
                 this.peer.destroy()
+                //コメント欄削除      検討中
+                const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+
+                (async () => {
+                    await sleep(10000);
+                    // window.location.href = '/user/mypage'
+                })();
+                // const call = this.peer.call(this.calltoid, this.localStream);
+
             }
         },
         image: function () {
@@ -176,6 +185,7 @@ export default {
 
     },
     mounted: function () {
+        //Skyway
         this.peer = new Peer({
             key: this.APIKey,
             debug: 3,
