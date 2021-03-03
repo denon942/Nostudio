@@ -134,19 +134,19 @@ export default {
             this.$store.commit('onAuthStateChanged')
         },
         openOrClose: function (a) {
-            //配信停止
+            //配信開始・停止
             this.$store.commit('openOrClose', a)
             this.callFlg = !this.callFlg
             if (a == false) {
                 //音声の通信切断
                 this.peer.destroy()
-                //コメント欄削除      検討中
-                const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
+                //コメント欄削除      ------------------------検討中---------------------------------
+                // const sleep = msec => new Promise(resolve => setTimeout(resolve, msec));
 
-                (async () => {
-                    await sleep(10000);
-                    // window.location.href = '/user/mypage'
-                })();
+                // (async () => {
+                //     await sleep(10000);
+                //     // window.location.href = '/user/mypage'
+                // })();
                 // const call = this.peer.call(this.calltoid, this.localStream);
 
             }

@@ -18,7 +18,7 @@ export default {
         comments_box: []
     }),
     methods: {
-        //視聴ページに一覧から選択した情報をViewingに
+        //視聴ページ(Viewing)に一覧から選択した情報を送る
         request(a) {
             this.$store.commit('delivery_info', this.comments[a])
         },
