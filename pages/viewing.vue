@@ -44,7 +44,8 @@ export default {
     }),
     methods: {
         makeCall: function () {
-            const call = this.peer.call(this.calltoid, this.localStream);
+            //const call = this.peer.call(this.calltoid, this.localStream);
+            const call = this.peer.call(this.calltoid);
             this.connect(call);
         },
 
@@ -54,7 +55,7 @@ export default {
                 el.srcObject = stream;
                 el.play();
             });
-        },
+        }
     },
     watch: {
         deliveryId: function () {
@@ -86,13 +87,10 @@ export default {
                 firebase.firestore().collection('delivery').doc(this.items.user_id).get().then(doc => {
                     this.deliveryId = doc.data().peer
                     this.flg = doc.data().flg
-                    this.thumbnail = doc.data().thumbnail,
+                    this.thumbnail = doc.data().thumbnail
                     this.title = doc.data().title
                 })
             })
-            // if(!this.flg){
-            //   this.peer.destroy()
-            // }
         }
     },
     computed: {

@@ -10,7 +10,7 @@
         </v-list-item>
     </v-list>
     <v-card class="grey display-1  pa-0 ma-0 pt-1" max-height="60" min-height="50" elevation="0" tile>
-        <v-form ref="form" v-model="valid">
+        <v-form ref="form" v-model="valid" @submit.prevent>
             <v-row class="ma-0 pa-0" justify="center">
                 <v-col>
                     <v-text-field dense label="Message" class="ma-0" color="black" v-model="coment" :rules="chatRules"></v-text-field>
