@@ -1,3 +1,4 @@
+import { atanh } from "core-js/fn/math"
 import firebase from "firebase/app"
 import "firebase/auth"
 import "firebase/firestore"

@@ -19,7 +19,7 @@
                                 </v-card-actions>
                             </v-card>
 
-                            <v-card v-else-if="card.title=='配信方法'" @click="linkToOtherWindow('https://drive.google.com/drive/u/0/folders/1Ji21xxX-30VKaU8EI2d0v7svUP-Xe48l')">
+                            <v-card v-else-if="card.title=='配信方法'" @click="linkToOtherWindow('https://drive.google.com/drive/folders/1SeQbDRZXpMCQptHBlUgP2iLyZauTBix8')">
                                 <v-img :src="card.src" class="white--text align-end" gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.5)">
                                     <v-card-title v-text="card.title"></v-card-title>
                                 </v-img>
