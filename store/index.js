@@ -19,19 +19,19 @@ export const state = () => ({
   user_fname_kana: '',
   user_name: 'ゲスト',
   user_name_kana: '',
-  // 住所
-  user_post:'',
-  user_address:'',
-  // 電話番号
-  user_tel:'',
-  // 性別
-  user_gender:0,
-  // 誕生日
-  user_year:0,
-  user_month:0,
-  user_day:0,
-  // クレジットカードナンバー
-  user_credit_number: '',
+  // // 住所
+  // user_post:'',
+  // user_address:'',
+  // // 電話番号
+  // user_tel:'',
+  // // 性別
+  // user_gender:0,
+  // // 誕生日
+  // user_year:0,
+  // user_month:0,
+  // user_day:0,
+  // // クレジットカードナンバー
+  // user_credit_number: '',
   //チャット
   comments:[],
   //サムネイル
@@ -184,7 +184,7 @@ export const mutations = {
                         if(snapshot.size != 0){
                           this.commit('openOrClose', false)
                         }else if(snapshot.size == 0){
-                          window.location.href = '/user/mypage'
+                          window.location.href = '/User/mypage'
                         }
                     })
             }
